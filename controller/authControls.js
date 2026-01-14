@@ -1,24 +1,36 @@
-
-
+const db = require('../db/pools');
+const bcrypt = require('bcrypt');
 
 async function registerControl(req, res) {
-	const { username, password } = req.body;
-	const hashedPassword = bcrypt.hashSync(password, 10);
-	const user = { username, password: hashedPassword };
-	users.push(user);
-	res.json(user);
+	const { email, password } = req.body;
+	if (!email || !password) {
+		return res.status(400).json({ message: 'Email and password are required' });
+	}
+	try {
+		const hashedPassword = await bcrypt.hash(password, 10);
+		await db.registerControl(email, hashedPassword);
+		res.status(201).json({ message: 'User registered successfully' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
 }
 async function loginControl(req, res) {
-	const { username, password } = req.body;
-	const user = users.find((u) => u.username === username);
-	if (!user) {
-		return res.status(401).json({ message: 'Invalid username or password' });
+	try {
+		const { email, password } = req.body;
+		const user = await db.findUserByEmail(email);
+		if (!user) {
+			return res.status(401).json({ message: 'Invalid email or password' });
+		}
+		const isPasswordValid = await bcrypt.compare(password, user.password);
+		if (!isPasswordValid) {
+			return res.status(401).json({ message: 'Invalid email or password' });
+		}
+		res.json({ message: 'Login successful' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
 	}
-	const isPasswordValid = bcrypt.compareSync(password, user.password);
-	if (!isPasswordValid) {
-		return res.status(401).json({ message: 'Invalid username or password' });
-	}
-	res.json({ message: 'Login successful' });
 }
 
 module.exports = {
