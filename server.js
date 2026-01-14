@@ -13,6 +13,9 @@ initializePassport(
 	(id) => users.find((user) => user.id === id)
 );
 
+const users = [];
+
+
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -24,12 +27,20 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, 'index.html'));
 });
-const users = [];
+
 app.get('/users', (req, res) => {
 	res.json(users);
+});
+
+app.get('/api/auth/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'register.html'));
+});
+app.get('/api/auth/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
 });
 
 app.post('/api/auth/register', express.json(), (req, res) => {
