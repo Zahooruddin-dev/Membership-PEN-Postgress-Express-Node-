@@ -1,10 +1,9 @@
-const path = require('path');
+const path = require('node:path');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const passport = require('passport');
 const flash = require('express-flash');
-const LocalStrategy = require('passport-local').Strategy;
 
 const initializePassport = require('./passport-config');
 initializePassport(
@@ -14,7 +13,6 @@ initializePassport(
 );
 
 const users = [];
-
 
 const app = express();
 
@@ -27,20 +25,19 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, 'index.html'));
+	res.render('index', { name: req.user?.name });
 });
 
 app.get('/users', (req, res) => {
 	res.json(users);
 });
 
-app.get('/api/auth/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'register.html'));
+app.get('/api/auth/register', async (req, res) => {
+	res.render('register');
 });
-app.get('/api/auth/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'login.html'));
+app.get('/api/auth/login', async (req, res) => {
+	res.render('login');
 });
 
 app.post('/api/auth/register', express.json(), (req, res) => {

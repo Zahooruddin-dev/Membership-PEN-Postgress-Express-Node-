@@ -6,13 +6,13 @@
 </head>
 <body>
   <h1>Login Page</h1>
-  <form action="/login" method="POST">
+  <form action="/api/auth/login" method="POST">
     <label for="email">Email</label>
     <input id="email" name="email" placeholder="email" type="text" required />
     <label for="password">Password</label>
     <input id="password" name="password" type="password" required/>
     <button type="submit">Sign Up</button>
   </form>
-  <p>Don't have an account? <a href="/register">Sign In</a></p>
+  <p>Don't have an account? <a href="/api/auth/register">Sign In</a></p>
 </body>
 </html>
