@@ -1,10 +1,13 @@
+
+
+
 async function registerControl(req, res) {
 	const { username, password } = req.body;
 	const hashedPassword = bcrypt.hashSync(password, 10);
 	const user = { username, password: hashedPassword };
 	users.push(user);
 	res.json(user);
-} 
+}
 async function loginControl(req, res) {
 	const { username, password } = req.body;
 	const user = users.find((u) => u.username === username);
@@ -19,6 +22,6 @@ async function loginControl(req, res) {
 }
 
 module.exports = {
-  registerControl,
-  loginControl,
+	registerControl,
+	loginControl,
 };
