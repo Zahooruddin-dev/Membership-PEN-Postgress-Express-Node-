@@ -1,8 +1,32 @@
+const path = require('path');
 const express = require('express');
 const bcrypt = require('bcrypt');
-const app = express();
-app.use(express.json());
+const session = require('express-session');
+const passport = require('passport');
+const flash = require('express-flash');
+const LocalStrategy = require('passport-local').Strategy;
 
+const initializePassport = require('./passport-config');
+initializePassport(
+	passport,
+	(email) => users.find((user) => user.email === email),
+	(id) => users.find((user) => user.id === id)
+);
+
+const app = express();
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(flash());
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/', (req, res) => {
+	res.sendFile(path.join(__dirname, 'index.html'));
+});
 const users = [];
 app.get('/users', (req, res) => {
 	res.json(users);
