@@ -1,14 +1,16 @@
-const db = require('../db/pools');
+const db = require('../db/quries');
 const bcrypt = require('bcrypt');
 
 async function registerControl(req, res) {
-	const { email, password } = req.body;
-	if (!email || !password) {
+  const { username, email, password } = req.body ;
+  if (!email || !password) {
 		return res.status(400).json({ message: 'Email and password are required' });
 	}
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
-		await db.registerControl(email, hashedPassword);
+		await db.createUser(username, email, hashedPassword);
+    console.log("User registered successfully", username, email, hashedPassword);
+    
 		res.status(201).json({ message: 'User registered successfully' });
 	} catch (error) {
 		console.error(error);
