@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const passport = require('passport');
 const flash = require('express-flash');
-
+const { registerControl, loginControl } = require('./controller/authControls');
 const initializePassport = require('./passport-config');
 initializePassport(
 	passport,
@@ -40,25 +40,8 @@ app.get('/api/auth/login', async (req, res) => {
 	res.render('login');
 });
 
-app.post('/api/auth/register', express.json(), (req, res) => {
-	const { username, password } = req.body;
-	const hashedPassword = bcrypt.hashSync(password, 10);
-	const user = { username, password: hashedPassword };
-	users.push(user);
-	res.json(user);
-});
-app.post('/api/auth/login', express.json(), (req, res) => {
-	const { username, password } = req.body;
-	const user = users.find((u) => u.username === username);
-	if (!user) {
-		return res.status(401).json({ message: 'Invalid username or password' });
-	}
-	const isPasswordValid = bcrypt.compareSync(password, user.password);
-	if (!isPasswordValid) {
-		return res.status(401).json({ message: 'Invalid username or password' });
-	}
-	res.json({ message: 'Login successful' });
-});
+app.post('/api/auth/register', registerControl);
+app.post('/api/auth/login', loginControl);
 
 app.listen(3000, () => {
 	console.log('Server is running on port 3000');
