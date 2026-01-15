@@ -12,10 +12,10 @@ async function findUserByEmail(email) {
   const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
   return result.rows[0];
 }
-async function createMessage(title, body) {
+async function createMessage(title, message) {
   const result = await pool.query(
-    'INSERT INTO messages (title, body) VALUES ($1, $2) RETURNING *',
-    [title, body]
+    'INSERT INTO message (title, message) VALUES ($1, $2) RETURNING *',
+    [title, message]
   );
   return result.rows[0];
 }

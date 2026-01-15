@@ -39,13 +39,13 @@ async function loginControl(req, res) {
 	}
 }
 async function createMessage(req, res) {
-	const { title, body } = req.body;
-	if (!title || !body) {
-		return res.status(400).json({ message: 'Title and body are required' });
+	const { title, message } = req.body;
+	if (!title || !message) {
+		return res.status(400).json({ message: 'Title and message are required' });
 	}
 	try {
-		await db.createMessage(title, body);
-		console.log('Message created successfully', title, body);
+		await db.createMessage(title, message);
+		console.log('Message created successfully', title, message);
 		res.status(201).json({ message: 'Message created successfully' });
 	} catch (error) {
 		console.error(error);
