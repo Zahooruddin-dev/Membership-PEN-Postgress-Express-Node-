@@ -7,10 +7,13 @@
 <body>
 
   <h1>hello world!</h1>
-  
-  <h1> <%= name %></h1>
-  <a href="/api/create/message">Messages create</a>
-  <a href="/messages">See all the messages</a>
+    <a href="/api/create/message">Messages create</a>
+    <ul>
+      <% messages.forEach(function(message) { %>
+        <li><strong><%= message.title %></strong>: <%= message.message %></li>
+      <% }); %>
+    </ul>
+
 
 
 </body>
