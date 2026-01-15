@@ -24,4 +24,5 @@ async function createMessage(title, body) {
 module.exports = {
   createUser,
   findUserByEmail,
+  createMessage
 };
