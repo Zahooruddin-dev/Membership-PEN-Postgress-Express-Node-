@@ -12,6 +12,14 @@ async function findUserByEmail(email) {
   const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
   return result.rows[0];
 }
+async function createMessage(title, body) {
+  const result = await pool.query(
+    'INSERT INTO messages (title, body) VALUES ($1, $2) RETURNING *',
+    [title, body]
+  );
+  return result.rows[0];
+}
+
 
 module.exports = {
   createUser,
