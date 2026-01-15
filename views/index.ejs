@@ -1,76 +1,187 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Members Only</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
     }
     header {
-      background: #020617;
-      padding: 20px;
+      background: rgba(2, 6, 23, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-info strong {
+      color: #f8fafc;
+      font-weight: 600;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+      color: #020617;
+    }
+    nav {
+      display: flex;
+      gap: 8px;
     }
     a {
       color: #38bdf8;
       text-decoration: none;
-      margin-left: 15px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    a:hover {
+      background: rgba(56, 189, 248, 0.1);
+      color: #7dd3fc;
+    }
+    a:focus {
+      outline: 2px solid #38bdf8;
+      outline-offset: 2px;
     }
     .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h2 {
+      font-size: 32px;
+      color: #f8fafc;
+      margin-bottom: 32px;
+      font-weight: 600;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+    .empty-state p {
+      font-size: 16px;
+      margin-bottom: 24px;
     }
     .card {
-      background: #020617;
-      padding: 20px;
-      border-radius: 8px;
+      background: #0f172a;
+      padding: 28px;
+      border-radius: 12px;
       margin-bottom: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.1);
+      transition: all 0.3s ease;
     }
-    h1, h2 {
-      margin-top: 0;
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border-color: rgba(56, 189, 248, 0.2);
+    }
+    .card h3 {
+      font-size: 20px;
+      color: #f8fafc;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .card p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-size: 15px;
     }
     .meta {
-      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #64748b;
+      padding-top: 12px;
+      border-top: 1px solid rgba(100, 116, 139, 0.2);
+    }
+    .meta-author {
       color: #94a3b8;
+      font-weight: 500;
+    }
+    .meta-divider {
+      color: #475569;
+    }
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+      }
+      nav {
+        width: 100%;
+        justify-content: center;
+      }
+      .container {
+        padding: 24px 16px;
+      }
+      h2 {
+        font-size: 24px;
+      }
+      .card {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-  <div>
-    Logged in as <strong><%= user.username %></strong>
-    (<%= user.membership_status %>)
-  </div>
-  <div>
-    <a href="/api/create/message">New Message</a>
-    <a href="/logout">Logout</a>
-  </div>
-</header>
+  <header role="banner">
+    <div class="user-info">
+      <span>Logged in as <strong><%= user.username %></strong></span>
+      <span class="badge"><%= user.membership_status %></span>
+    </div>
+    <nav role="navigation">
+      <a href="/api/create/message">New Message</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
 
-<div class="container">
-  <h2>Messages</h2>
+  <main class="container">
+    <h2>Messages</h2>
 
-  <% if (messages.length === 0) { %>
-    <p>No messages available.</p>
-  <% } else { %>
-    <% messages.forEach(function(m) { %>
-      <div class="card">
-        <h3><%= m.title %></h3>
-        <p><%= m.message %></p>
-        <div class="meta">
-          by <%= m.username %> · <%= m.timestamp ? new Date(m.timestamp).toLocaleString() : '' %>
-        </div>
+    <% if (typeof messages === 'undefined' || messages.length === 0) { %>
+      <div class="empty-state">
+        <p>No messages available.</p>
       </div>
-    <% }) %>
-  <% } %>
-</div>
-
+    <% } else { %>
+      <% messages.forEach(function(m) { %>
+        <article class="card">
+          <h3><%= m.title %></h3>
+          <p><%= m.message %></p>
+          <div class="meta">
+            <span class="meta-author">by <%= m.username %></span>
+            <span class="meta-divider">·</span>
+            <time datetime="<%= m.timestamp %>"><%= m.timestamp ? new Date(m.timestamp).toLocaleString() : 'Unknown date' %></time>
+          </div>
+        </article>
+      <% }) %>
+    <% } %>
+  </main>
 </body>
 </html>
