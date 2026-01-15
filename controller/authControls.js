@@ -46,7 +46,16 @@ async function createMessage(req, res) {
 	try {
 		await db.createMessage(title, message);
 		console.log('Message created successfully', title, message);
-		res.status(201).json({ message: 'Message created successfully' });
+		res.redirect('/');
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+}
+async function showAllMessages(req, res) {
+	try {
+		const messages = await db.allMessages();
+		res.render('messages', { messages });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -57,4 +66,5 @@ module.exports = {
 	registerControl,
 	loginControl,
 	createMessage,
+	showAllMessages,
 };

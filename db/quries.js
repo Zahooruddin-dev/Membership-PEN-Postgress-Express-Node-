@@ -23,6 +23,10 @@ async function findUserById(id) {
   const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
   return result.rows[0];
 }   
+async function allMessages() {
+  const result = await pool.query('SELECT * FROM message');
+  return result.rows;
+}
 
 
 module.exports = {
@@ -30,4 +34,5 @@ module.exports = {
   findUserByEmail,
   createMessage,
   findUserById,
+  allMessages,
 };
