@@ -2,16 +2,21 @@ const db = require('../db/quries');
 const bcrypt = require('bcrypt');
 
 async function registerControl(req, res) {
-  const { username, email, password } = req.body ;
-  if (!email || !password) {
+	const { username, email, password } = req.body;
+	if (!email || !password) {
 		return res.status(400).json({ message: 'Email and password are required' });
 	}
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
 		await db.createUser(username, email, hashedPassword);
-    console.log("User registered successfully", username, email, hashedPassword);
-    
+		console.log(
+			'User registered successfully',
+			username,
+			email,
+			hashedPassword
+		);
 		res.status(201).json({ message: 'User registered successfully' });
+		res.redirect('/');
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: 'Internal server error' });
@@ -29,21 +34,22 @@ async function loginControl(req, res) {
 			return res.status(401).json({ message: 'Invalid email or password' });
 		}
 		res.json({ message: 'Login successful' });
+		res.redirect('/');
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: 'Internal server error' });
 	}
 }
 async function createMessage(req, res) {
-	const { title, body } = req.body ;
+	const { title, body } = req.body;
 	if (!title || !body) {
 		return res.status(400).json({ message: 'Title and body are required' });
 	}
 	try {
 		await db.createMessage(title, body);
-		console.log("Message created successfully", title, body);	
+		console.log('Message created successfully', title, body);
 		res.status(201).json({ message: 'Message created successfully' });
-		} catch (error) {
+	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: 'Internal server error' });
 	}
@@ -52,5 +58,5 @@ async function createMessage(req, res) {
 module.exports = {
 	registerControl,
 	loginControl,
-	createMessage
+	createMessage,
 };
