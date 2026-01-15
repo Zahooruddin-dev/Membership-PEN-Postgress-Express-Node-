@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-</head>
-<body>
-
-  <h1>hello world!</h1>
-    <a href="/api/create/message">Messages create</a>
-    <ul>
-      <% messages.forEach(function(message) { %>
-        <li><strong><%= message.title %></strong>: <%= message.message %></li>
-      <% }); %>
-    </ul>
-
-
-
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Home</title>
+	</head>
+	<body>
+		<h1>hello world!</h1>
+		<a href="/api/create/message">Messages create</a>
+		<ul>
+			<% messages.forEach(function(message) { %>
+			<li><strong><%= message.title %></strong>: <%= message.message %></li>
+			<% }); %>
+		</ul>
+	</body>
 </html>
