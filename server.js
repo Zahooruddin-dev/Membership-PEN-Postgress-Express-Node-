@@ -44,6 +44,9 @@ app.post('/api/auth/register', registerControl);
 app.post('/api/auth/login', loginControl);
 
 
+app.get('/api/create/message', async (req, res) => {
+	res.render('message');
+});
 
 
 
