@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Message Page</title>
+	</head>
+	<body>
+		<h1>Message Page</h1>
+		<form action="/api/create/message" method="POST">
+			<label for="title">Title</label>
+			<input id="title" name="title" placeholder="title" type="text" required />
+			<label for="message">Message</label>
+			<input
+				id="message"
+				name="message"
+				placeholder="message"
+				type="text"
+				required
+			/>
+			<button type="submit">Create Message</button>
+		</form>
+		<p><a href="/">Home Page</a></p>
+	</body>
+</html>

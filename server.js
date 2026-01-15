@@ -43,6 +43,18 @@ app.get('/api/auth/login', async (req, res) => {
 app.post('/api/auth/register', registerControl);
 app.post('/api/auth/login', loginControl);
 
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(3000, () => {
 	console.log('Server is running on port 3000');
 });
