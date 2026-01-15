@@ -34,8 +34,23 @@ async function loginControl(req, res) {
 		res.status(500).json({ message: 'Internal server error' });
 	}
 }
+async function createMessage(req, res) {
+	const { title, body } = req.body ;
+	if (!title || !body) {
+		return res.status(400).json({ message: 'Title and body are required' });
+	}
+	try {
+		await db.createMessage(title, body);
+		console.log("Message created successfully", title, body);	
+		res.status(201).json({ message: 'Message created successfully' });
+		} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+}
 
 module.exports = {
 	registerControl,
 	loginControl,
+	createMessage
 };

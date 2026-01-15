@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const passport = require('passport');
 const flash = require('express-flash');
-const { registerControl, loginControl } = require('./controller/authControls');
+const { registerControl, loginControl,createMessage } = require('./controller/authControls');
 const initializePassport = require('./passport-config');
 initializePassport(
 	passport,
@@ -47,6 +47,7 @@ app.post('/api/auth/login', loginControl);
 app.get('/api/create/message', async (req, res) => {
 	res.render('message');
 });
+app.post('/api/create/message', createMessage)
 
 
 
