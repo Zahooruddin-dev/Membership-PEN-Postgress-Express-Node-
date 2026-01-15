@@ -45,12 +45,27 @@ app.get('/api/auth/login', checkNotAuthenticated, async (req, res) => {
 });
 
 app.post('/api/auth/register', checkNotAuthenticated, registerControl);
-app.post('/api/auth/login', checkNotAuthenticated, loginControl);
+app.post(
+	'/api/auth/login',
+	checkNotAuthenticated,
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/api/auth/login',
+		failureFlash: true,
+	})
+);
 
 app.get('/api/create/message', async (req, res) => {
 	res.render('message');
 });
 app.post('/api/create/message', createMessage);
+app.delete('/logout', (req, res, next) => {
+	req.logout((err => {
+    if (err) { return next(err); }
+    res.redirect('/login');
+  }));
+});
+
 
 function checkAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {

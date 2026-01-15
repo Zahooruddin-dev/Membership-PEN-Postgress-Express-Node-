@@ -15,7 +15,6 @@ async function registerControl(req, res) {
 			email,
 			hashedPassword
 		);
-		res.status(201).json({ message: 'User registered successfully' });
 		res.redirect('/');
 	} catch (error) {
 		console.error(error);
@@ -33,7 +32,6 @@ async function loginControl(req, res) {
 		if (!isPasswordValid) {
 			return res.status(401).json({ message: 'Invalid email or password' });
 		}
-		res.json({ message: 'Login successful' });
 		res.redirect('/');
 	} catch (error) {
 		console.error(error);
