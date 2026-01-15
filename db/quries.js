@@ -28,5 +28,6 @@ async function findUserById(id) {
 module.exports = {
   createUser,
   findUserByEmail,
-  createMessage
+  createMessage,
+  findUserById,
 };
