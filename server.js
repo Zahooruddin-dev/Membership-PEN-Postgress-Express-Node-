@@ -36,9 +36,14 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', checkAuthenticated, (req, res) => {
-	res.render('index', { user: req.user });
+app.get('/', checkAuthenticated, async (req, res) => {
+	const messages = await db.allMessages();
+	res.render('index', {
+		name: req.user?.username,
+		messages,
+	});
 });
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api', messageRoutes);
