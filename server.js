@@ -37,19 +37,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', checkAuthenticated, async (req, res) => {
-  const messages = await db.allMessages();
-  res.render('index', {
-    user: req.user || { username: 'Guest', membership_status: 'N/A' },
-    messages: messages || []
-  });
+	const messages = await db.allMessages();
+	res.render('index', {
+		user: req.user || { username: 'Guest', membership_status: 'N/A' },
+		messages: messages || [],
+	});
 });
-
-
 
 app.use('/api/auth', authRoutes);
 app.use('/api', messageRoutes);
-
-app.delete('/logout', (req, res, next) => {
+app.get('/logout', (req, res, next) => {
 	req.logout((err) => {
 		if (err) return next(err);
 		res.redirect('/api/auth/login');
