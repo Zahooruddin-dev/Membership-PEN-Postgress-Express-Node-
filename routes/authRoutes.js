@@ -11,8 +11,9 @@ router.get('/register', checkNotAuthenticated, (req, res) => {
 });
 
 router.get('/login', checkNotAuthenticated, (req, res) => {
-	res.render('login');
+	res.render('login', { error: req.flash('error') });
 });
+
 
 router.post('/register', checkNotAuthenticated, registerControl);
 
