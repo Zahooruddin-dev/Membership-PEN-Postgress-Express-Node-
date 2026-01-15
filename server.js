@@ -9,6 +9,8 @@ const db = require('./db/quries');
 
 const authRoutes = require('./routes/authRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const sessionSecret = process.env.SESSION_SECRET || 'secret';
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -26,7 +28,7 @@ app.use(express.json());
 
 app.use(
 	session({
-		secret: 'secret',
+		secret: sessionSecret,
 		resave: false,
 		saveUninitialized: false,
 	})
@@ -58,6 +60,6 @@ function checkAuthenticated(req, res, next) {
 	res.redirect('/api/auth/login');
 }
 
-app.listen(3000, () => {
-	console.log('Server is running on port 3000');
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
