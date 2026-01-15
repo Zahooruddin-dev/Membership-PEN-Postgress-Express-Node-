@@ -46,15 +46,14 @@ async function updateMembershipStatus(userId, status) {
   return rows[0];
 }
 
-async function createMessage(userId, title, message) {
-  const { rows } = await pool.query(
-    `INSERT INTO message (user_id, title, message, timestamp)
-     VALUES ($1, $2, $3, NOW())
-     RETURNING *`,
-    [userId, title, message]
-  );
-  return rows[0];
+async function createMessage(title, message, user_id) {
+	const result = await pool.query(
+		'INSERT INTO message (title, message, user_id) VALUES ($1, $2, $3) RETURNING *',
+		[title, message, user_id]
+	);
+	return result.rows[0];
 }
+
 
 async function allMessages(limit = 20, offset = 0) {
   const { rows } = await pool.query(
