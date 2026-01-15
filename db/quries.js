@@ -1,44 +1,105 @@
 const pool = require('./pools');
 
 async function createUser(
-	username,
-	email,
-	hashedPassword,
-	membership_status = 'Premium'
+  username,
+  email,
+  hashedPassword,
+  membership_status = 'Premium'
 ) {
-	const result = await pool.query(
-		'INSERT INTO users (username, email, password, membership_status) VALUES ($1, $2, $3, $4) RETURNING *',
-		[username, email, hashedPassword, membership_status]
-	);
-	return result.rows[0];
+  const { rows } = await pool.query(
+    `INSERT INTO users (username, email, password, membership_status)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, username, email, membership_status`,
+    [username, email, hashedPassword, membership_status]
+  );
+  return rows[0];
 }
 
 async function findUserByEmail(email) {
-	const result = await pool.query('SELECT * FROM users WHERE email = $1', [
-		email,
-	]);
-	return result.rows[0];
+  const { rows } = await pool.query(
+    `SELECT id, username, email, password, membership_status
+     FROM users
+     WHERE email = $1`,
+    [email]
+  );
+  return rows[0];
 }
-async function createMessage(title, message) {
-	const result = await pool.query(
-		'INSERT INTO message (title, message) VALUES ($1, $2) RETURNING *',
-		[title, message]
-	);
-	return result.rows[0];
-}
+
 async function findUserById(id) {
-	const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
-	return result.rows[0];
+  const { rows } = await pool.query(
+    `SELECT id, username, email, membership_status
+     FROM users
+     WHERE id = $1`,
+    [id]
+  );
+  return rows[0];
 }
-async function allMessages() {
-	const result = await pool.query('SELECT * FROM message ORDER BY id DESC');
-	return result.rows;
+
+async function updateMembershipStatus(userId, status) {
+  const { rows } = await pool.query(
+    `UPDATE users
+     SET membership_status = $2
+     WHERE id = $1
+     RETURNING id, membership_status`,
+    [userId, status]
+  );
+  return rows[0];
+}
+
+async function createMessage(userId, title, message) {
+  const { rows } = await pool.query(
+    `INSERT INTO message (user_id, title, message, timestamp)
+     VALUES ($1, $2, $3, NOW())
+     RETURNING *`,
+    [userId, title, message]
+  );
+  return rows[0];
+}
+
+async function allMessages(limit = 20, offset = 0) {
+  const { rows } = await pool.query(
+    `SELECT m.id, m.title, m.message, m.timestamp, u.username, u.membership_status
+     FROM message m
+     JOIN users u ON u.id = m.user_id
+     ORDER BY m.timestamp DESC
+     LIMIT $1 OFFSET $2`,
+    [limit, offset]
+  );
+  return rows;
+}
+
+async function premiumMessages(limit = 20, offset = 0) {
+  const { rows } = await pool.query(
+    `SELECT m.id, m.title, m.message, m.timestamp, u.username
+     FROM message m
+     JOIN users u ON u.id = m.user_id
+     WHERE u.membership_status = 'Premium'
+     ORDER BY m.timestamp DESC
+     LIMIT $1 OFFSET $2`,
+    [limit, offset]
+  );
+  return rows;
+}
+
+async function messagesByUser(userId, limit = 20, offset = 0) {
+  const { rows } = await pool.query(
+    `SELECT id, title, message, timestamp
+     FROM message
+     WHERE user_id = $1
+     ORDER BY timestamp DESC
+     LIMIT $2 OFFSET $3`,
+    [userId, limit, offset]
+  );
+  return rows;
 }
 
 module.exports = {
-	createUser,
-	findUserByEmail,
-	createMessage,
-	findUserById,
-	allMessages,
+  createUser,
+  findUserByEmail,
+  findUserById,
+  updateMembershipStatus,
+  createMessage,
+  allMessages,
+  premiumMessages,
+  messagesByUser,
 };
