@@ -1,16 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<title>Home</title>
-	</head>
-	<body>
-		<h1>hello world!</h1>
-		<a href="/api/create/message">Messages create</a>
-		<ul>
-			<% messages.forEach(function(message) { %>
-			<li><strong><%= message.title %></strong>: <%= message.message %></li>
-			<% }); %>
-		</ul>
-	</body>
+<html>
+<head>
+  <title>Members Only</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #020617;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    a {
+      color: #38bdf8;
+      text-decoration: none;
+      margin-left: 15px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: #020617;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    h1, h2 {
+      margin-top: 0;
+    }
+    .meta {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      Logged in as <strong><%= user.username %></strong>
+      (<%= user.membership_status %>)
+    </div>
+    <div>
+      <a href="/api/create/message">New Message</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Messages</h2>
+
+    <% if (messages.length === 0) { %>
+      <p>No messages available.</p>
+    <% } %>
+
+    <% messages.forEach(m => { %>
+      <div class="card">
+        <h3><%= m.title %></h3>
+        <p><%= m.message %></p>
+        <div class="meta">
+          by <%= m.username %> · <%= new Date(m.timestamp).toLocaleString() %>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</body>
 </html>
