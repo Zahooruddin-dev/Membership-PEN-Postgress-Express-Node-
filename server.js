@@ -53,7 +53,19 @@ app.post('/api/create/message', createMessage)
 
 
 
+function checkAuthenticated(req, res, next) {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	res.redirect('/api/auth/login');
+}
 
+function checkNotAuthenticated(req, res, next) {
+	if (req.isAuthenticated()) {
+		return res.redirect('/');
+	}
+	next();
+}
 
 
 
