@@ -19,6 +19,10 @@ async function createMessage(title, body) {
   );
   return result.rows[0];
 }
+async function findUserById(id) {
+  const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+  return result.rows[0];
+}   
 
 
 module.exports = {

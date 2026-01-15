@@ -9,15 +9,19 @@ const {
 	loginControl,
 	createMessage,
 } = require('./controller/authControls');
+const db = require('./db/quries');
 const initializePassport = require('./passport-config');
 initializePassport(
 	passport,
-	(email) => users.find((user) => user.email === email),
-	(id) => users.find((user) => user.id === id)
+	async (email) => {
+		const user = await db.findUserByEmail(email);
+		return user;
+	},
+	async (id) => {
+		const user = await db.findUserById(id);
+		return user;
+	}
 );
-
-const users = [];
-
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -59,13 +63,15 @@ app.get('/api/create/message', async (req, res) => {
 	res.render('message');
 });
 app.post('/api/create/message', createMessage);
-app.delete('/logout', (req, res, next) => {
-	req.logout((err => {
-    if (err) { return next(err); }
-    res.redirect('/login');
-  }));
-});
 
+app.delete('/logout', (req, res, next) => {
+	req.logout((err) => {
+		if (err) {
+			return next(err);
+		}
+		res.redirect('/login');
+	});
+});
 
 function checkAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {

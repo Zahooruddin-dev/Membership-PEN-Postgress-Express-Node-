@@ -3,19 +3,21 @@ const bcrypt = require('bcrypt');
 
 function initialize(passport, getUserByEmail, getUserById) {
   const authenticateUser = async (email, password, done) => {
-    const user = getUserByEmail(email);
-    if (!user) {
-      return done(null, false, { message: 'No user with that email' });
-    }
-
     try {
-      if (await bcrypt.compare(password, user.password)) {
-        return done(null, user);
-      } else {
+      const user = await getUserByEmail(email); 
+
+      if (!user) {
+        return done(null, false, { message: 'No user with that email' });
+      }
+
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
         return done(null, false, { message: 'Password incorrect' });
       }
-    } catch (e) {
-      return done(e);
+
+      return done(null, user);
+    } catch (err) {
+      return done(err);
     }
   };
 
@@ -27,10 +29,14 @@ function initialize(passport, getUserByEmail, getUserById) {
     done(null, user.id);
   });
 
-  passport.deserializeUser((id, done) => {
-    const user = getUserById(id);
-    if (!user) return done(null, false);
-    done(null, user);
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await getUserById(id); 
+      if (!user) return done(null, false);
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
   });
 }
 
