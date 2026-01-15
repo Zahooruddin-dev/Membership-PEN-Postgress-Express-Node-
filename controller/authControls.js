@@ -36,21 +36,16 @@ async function loginControl(req, res) {
 
 async function createMessage(req, res) {
 	const { title, message } = req.body;
-
 	if (!title || !message) {
-		return res.render('message', {
-			error: 'Title and message are required',
-		});
+		return res.status(400).json({ message: 'Title and message are required' });
 	}
-
 	try {
-		await db.createMessage(req.user.id, title, message);
-		return res.redirect('/');
+		const userId = req.user.id; // add this
+		await db.createMessage(title, message, userId);
+		res.redirect('/');
 	} catch (error) {
 		console.error(error);
-		return res.render('message', {
-			error: 'Failed to create message',
-		});
+		res.status(500).json({ message: 'Internal server error' });
 	}
 }
 
