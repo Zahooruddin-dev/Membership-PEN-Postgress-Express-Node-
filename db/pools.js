@@ -13,7 +13,7 @@ if (process.env.DATABASE_URL) {
 } else {
 	// Local development
 	pool = new Pool({
-		connectionString: 'postgresql://postgres:oFpEZxOfEOofClVrFvOmZAyUHfbUyLDz@shuttle.proxy.rlwy.net:11624/railway',
+		connectionString: 'postgresql://postgres:root@localhost:5432/membership',
 	});
 }
 
