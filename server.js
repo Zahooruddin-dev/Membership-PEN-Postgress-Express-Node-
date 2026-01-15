@@ -8,6 +8,7 @@ const {
 	registerControl,
 	loginControl,
 	createMessage,
+	showAllMessages,
 } = require('./controller/authControls');
 const db = require('./db/quries');
 const initializePassport = require('./passport-config');
@@ -63,6 +64,8 @@ app.get('/api/create/message', async (req, res) => {
 	res.render('message');
 });
 app.post('/api/create/message', createMessage);
+
+app.get('/messages', showAllMessages);
 
 app.delete('/logout', (req, res, next) => {
 	req.logout((err) => {

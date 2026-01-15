@@ -55,7 +55,7 @@ async function createMessage(req, res) {
 async function showAllMessages(req, res) {
 	try {
 		const messages = await db.allMessages();
-		res.render('messages', { messages });
+		res.render('index', { messages });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: 'Internal server error' });
