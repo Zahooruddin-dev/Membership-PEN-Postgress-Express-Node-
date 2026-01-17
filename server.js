@@ -3,7 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const flash = require('express-flash');
-
+const jwt = require('jsonwebtoken');
 const initializePassport = require('./passport-config');
 const db = require('./db/quries');
 
@@ -17,7 +17,7 @@ const app = express();
 initializePassport(
 	passport,
 	async (email) => await db.findUserByEmail(email),
-	async (id) => await db.findUserById(id)
+	async (id) => await db.findUserById(id),
 );
 
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +31,7 @@ app.use(
 		secret: sessionSecret,
 		resave: false,
 		saveUninitialized: false,
-	})
+	}),
 );
 
 app.use(flash());
@@ -54,6 +54,18 @@ app.get('/logout', (req, res, next) => {
 		res.redirect('/api/auth/login');
 	});
 });
+app.post('/api/login', (req, res) => {
+	const user = {
+		id: 1,
+		username: 'test',
+		email: 'josh@gmail.com',
+	};
+	jwt.sign({ user }, 'secret', (err, token) => {
+		res.json({
+			token,
+		});
+	});
+});
 
 function checkAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) return next();
@@ -61,5 +73,5 @@ function checkAuthenticated(req, res, next) {
 }
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+	console.log(`Server running on port ${PORT}`);
 });
