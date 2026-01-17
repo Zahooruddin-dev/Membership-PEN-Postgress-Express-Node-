@@ -54,6 +54,13 @@ app.get('/logout', (req, res, next) => {
 		res.redirect('/api/auth/login');
 	});
 });
+
+app.post('/api/posts', verifyTOken, (req, res) => {
+	res.json({
+		message: 'success',
+	});
+});
+
 app.post('/api/login', (req, res) => {
 	const user = {
 		id: 1,
@@ -66,6 +73,15 @@ app.post('/api/login', (req, res) => {
 		});
 	});
 });
+
+function verifyTOken(req, res) {
+	const bearerHeader = req.headers['authorization'];
+	if (typeof bearerHeader !== 'undefined') {
+		const bearer = bearerHeader.split('');
+	} else {
+		res.status(403).send('Forbidden');
+	}
+}
 
 function checkAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) return next();
