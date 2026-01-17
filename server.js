@@ -56,8 +56,15 @@ app.get('/logout', (req, res, next) => {
 });
 
 app.post('/api/posts', verifyTOken, (req, res) => {
-	res.json({
-		message: 'success',
+	jwt.verify(req.token, 'secret', (err, authData) => {
+		if (err) {
+			res.sendStatus(403);
+		} else {
+			res.json({
+				message: 'Post created...',
+				authData,
+			});
+		}
 	});
 });
 
@@ -77,7 +84,7 @@ app.post('/api/login', (req, res) => {
 function verifyTOken(req, res, next) {
 	const bearerHeader = req.headers['authorization'];
 	if (typeof bearerHeader !== 'undefined') {
-		const bearer = bearerHeader.split('');
+		const bearer = bearerHeader.split(' ');
 		const bearerToken = bearer[1];
 		req.token = bearerToken;
 		next();
